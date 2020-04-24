@@ -1,6 +1,10 @@
 import React, { Component } from "react";
 import './style.css'
 
+/*
+User inputs a country 
+The program displays the population of that country
+*/
 export default class FetchCountryData extends Component {
     state = {
         showLoading: false,

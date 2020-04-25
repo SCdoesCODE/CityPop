@@ -2,83 +2,106 @@ import React, { Component } from "react";
 import './style.css'
 
 /*
+
+http://www.geonames.org/export/codes.html
+featureCode = PPLA for seat of a first-order administrative division
+featureCode = PPLC to include the capital
+
+User inputs country and the program returns the top cities and their populations
+
 TODO
 
-User inputs a country and the program SHOULD return the largest cities in that country and their populations
+shows loading from the beginning, should not be shown before user has pressed search
+search should be invoked through enter also
+styling
+
+instead of showing error when country cannot be found - display some text
+
+Do test to see if input is case-insensitive
 
 */
 
 export default class FetchCityPopsForCountry extends Component {
 
     
-    cities =  [{name : '',population : ''},{name : '',population : ''},{name : '',population : ''}]
-    state = {
-        beforeSearch : true,
-        showLoading: false,
-        country: '',
-        countryInput: '',
-        north : '',
-        south :'',
-        east : '',
-        west : '',
-       
-    };
+   
+    numberOfCountriesToDisplay = 3
+    divResults = []
+    cities = []
     
+    state = {
+        
+        showLoading: true,
+        country: '',
+        countryInput: ''
+    };
+    /*update the user input*/ 
     handleOnChange = event => {
         this.setState({ countryInput: event.target.value });
     };
+
+    /*Make API call upon user pressing search-button*/
     handleSearch = () => {
-        this.setState({ showLoading: true ,beforeSearch : false});
-        this.makeApiCountryCall(this.state.countryInput);
+        this.makeApiCall(this.state.countryInput);
     };
-    async makeApiCountryCall(input) {
-        const url = "http://api.geonames.org/countryInfoJSON?username=weknowit";
+
+    /*
+    Receives the input string from user, this input is likely the name of a country
+    Fetches countrycode for that country from restcountries API
+    Searches for all cities belonging to this countrycode using geonames API
+    */
+    async makeApiCall(input) {
+        const urlCode = "https://restcountries.eu/rest/v2/name/" + input;
+        const responseCode = await fetch(urlCode);
+        const dataCode = await responseCode.json();
+        let countryCode = dataCode[0].alpha2Code
+        const url = "http://api.geonames.org/searchJSON?&country="+countryCode+"&featureCode=PPLA&featureCode=PPLC&username=weknowit";
         const response = await fetch(url);
         const data = await response.json();
-        let entryIndex = data.geonames.findIndex(entry => entry.countryName.toUpperCase() === input.toUpperCase());
-        this.setState({ country: data.geonames[entryIndex], north :  data.geonames[entryIndex].north,
-            south :  data.geonames[entryIndex].south, east :  data.geonames[entryIndex].east, west :  data.geonames[entryIndex].west});
-        this.makeApiCityCall();
+        /*For each city : add its name and population to the cities array, as an object*/ 
+        data.geonames.forEach(cityEntry => {
+            this.cities.push({population : cityEntry.population,name : cityEntry.name})
+                }) 
+        /*Sort the cities array according to the attribute : population*/
+        this.cities.sort(function(a, b) {
+            return (a.population > b.population) ? -1:+1;
+            });
+        /*Update country with the help of geonames in case user misspelled*/
+        this.setState({ country: data.geonames[0].countryName,showLoading: false});
         
     }
 
-    async makeApiCityCall(){
-        let north = this.state.north;
-        let south = this.state.south;
-        let east = this.state.east;
-        let west = this.state.west;
-        const url = "http://api.geonames.org/citiesJSON?north=" + north +"&south="+south+"&east="+east+"&west="+west+"&lang=en&username=weknowit";
-        const response = await fetch(url);
-        const data = await response.json();
-        /*this.state.cities.forEach(function(item,index) {return this.setState({ name : data.geonames[index].name, population : data.geonames[index].population});})*/
-        this.cities.forEach(function(item,index) {return item.name = data.geonames[index].name,item.population = data.geonames[index].population })
-        this.setState({ showLoading: false });
+    /*
+    Invoked after user has already searched for something
+    */
 
+    undoResults(){
+        this.divResults = []
+        this.cities = []
     }
 
-
     render() {
+
+        /*populate the divResults array with divs displaying city-name and population*/
+        this.cities.forEach(cityEntry =>{(this.divResults.push(
+        <div>
+        <br/>
+        <div>City : {cityEntry.name}</div>
+        <div>Population : {cityEntry.population}</div>
+        </div>))
+        }
+        )
+
         return (<div className="center">
             <h1>Search by country</h1>
             <input name="text" type="text" placeholder="Search" onChange={event => this.handleOnChange(event)} value={this.state.countryInput} />
             <button onClick={this.handleSearch}>Search</button>
-            {this.state.showLoading && !this.state.beforeSearch ? (<div> loading
+            {this.state.showLoading ? (<div> loading
             </div>) : (<div>
-                <div>Country : {this.state.country.countryName}</div>
-                <div>City : {this.cities[0].name}</div>
-                <div>Population : {this.cities[0].population}</div>
-                <div>City : {this.cities[1].name}</div>
-                <div>Population : {this.cities[1].population}</div>
-                <div>City : {this.cities[2].name}</div>
-                <div>Population : {this.cities[2].population}</div>
-                
-                {this.cities.forEach(function(item,index){ return(
-                    <div>
-                <div>City : {item.name}</div>
-                <div>Population : {item.population}</div>
-                </div>)})
-                }
-                
+                <br/>
+                <div>Country : {this.state.country}</div>
+                {this.divResults.splice(0,this.numberOfCountriesToDisplay)}
+                {this.undoResults()}
             </div>)}
         </div>);
     }

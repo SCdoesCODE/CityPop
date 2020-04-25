@@ -1,5 +1,4 @@
 import React from 'react'
-import FetchCountryData from './FetchCountryData';
 import { Link , BrowserRouter} from 'react-router-dom';
 
 
@@ -20,7 +19,7 @@ export default function ChooseScope() {
         <div>
             <BrowserRouter>
             CityPop
-            <Link to="/FetchCountryData"><a href="./FetchCountryData">Search by country</a></Link>
+            <button>Search by country</button>
             <button>Search by city</button>
             </BrowserRouter>
         </div>

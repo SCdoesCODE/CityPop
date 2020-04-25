@@ -37,7 +37,7 @@ export default class FetchCountryData extends Component {
     }
     render() {
         return (<div className="center">
-            <h1>Search by country</h1>
+            <h1>Search by city</h1>
             <input name="text" type="text" placeholder="Search" onChange={event => this.handleOnChange(event)} value={this.state.cityInput} />
             <button onClick={this.handleSearch}>Search</button>
             {this.state.showLoading && !this.state.beforeSearch? (<div> loading

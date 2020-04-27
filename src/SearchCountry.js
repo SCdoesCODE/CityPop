@@ -19,6 +19,8 @@ instead of showing error when country cannot be found - display some text
 
 Do test to see if input is case-insensitive
 
+show cities first, then let user pick city, then display the population of that city
+
 */
 
 export default class FetchCityPopsForCountry extends Component {
@@ -87,7 +89,7 @@ export default class FetchCityPopsForCountry extends Component {
         <div>
         <br/>
         <div>City : {cityEntry.name}</div>
-        <div>Population : {cityEntry.population}</div>
+        <div>Population : {cityEntry.population.toLocaleString().replace(/,/g," ",)}</div>
         </div>))
         }
         )

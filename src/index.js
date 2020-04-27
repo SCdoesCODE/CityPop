@@ -2,14 +2,21 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
 import ChooseScope from './ChooseScope'
-import {BrowserRouter as Router, Route} from "react-router-dom"
+import SearchCountry from './SearchCountry'
+import FetchCityPopulation from './FetchCityPopulation'
+import { BrowserRouter, Route, Switch } from "react-router-dom";
 
 
 ReactDOM.render(
-  <React.StrictMode>
-    <App />
-    
-  </React.StrictMode>,
+  <BrowserRouter>
+        <App />
+       <Switch>
+       <Route path="/ChooseScope" component={ChooseScope} />
+        <Route path="/SearchCountry" component={SearchCountry} />
+         <Route path="/FetchCityPopulation" component={FetchCityPopulation} />
+
+      </Switch>
+      </BrowserRouter>,
   document.getElementById('root')
 );
 

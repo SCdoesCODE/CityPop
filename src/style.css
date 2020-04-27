@@ -1,7 +1,30 @@
+*{ /*universal selector : whole website gets the same font*/
+  font-family: monospace;
+}
+
 .center {
     margin: auto;
     text-align: center;
     margin-top: 200px;
     
   }
+
+.button{
+  font-size: 30px; 
+  height : 100px; 
+  width: 400px; /*to have buttons of equal width, regardless of text*/
+  margin : 10px;
+  border-radius : 12px;
+  vertical-align: top; /*makes sure that the font does not change the position of the button elements*/
+}
+
+.button:hover{
+  background-color: rgb(0, 173, 253);
+  color: white; /*text color on hover*/
+}
+
+.citypoptext {
+  font-size : 50px;
+  margin-bottom: 50px;
+}
 

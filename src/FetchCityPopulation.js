@@ -9,6 +9,10 @@ The program displays the population of that city
 The user can input a country as well, and that would work
 Not sure if I should implement some error message if the input is not a city
 
+TODO
+
+can't do tolocalstring without getting error atm
+
 */
 export default class FetchCountryData extends Component {
     state = {

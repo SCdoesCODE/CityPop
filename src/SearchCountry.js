@@ -1,13 +1,19 @@
 import React, { Component } from "react";
 import './style.css'
 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faSearch } from '@fortawesome/free-solid-svg-icons'
+
 /*
+
+https://programmingwithmosh.com/react/font-awesome-5-with-react/
+font awesome for react
 
 http://www.geonames.org/export/codes.html
 featureCode = PPLA for seat of a first-order administrative division
 featureCode = PPLC to include the capital
 
-User inputs country and the program returns the top cities and their populations
+User inputs country and the program returns the top cities 
 
 TODO
 
@@ -35,17 +41,29 @@ export default class FetchCityPopsForCountry extends Component {
         
         showLoading: true,
         country: '',
-        countryInput: ''
+        countryInput: '',
+        searchingForNewCountry : false
     };
-    /*update the user input*/ 
-    handleOnChange = event => {
-        this.setState({ countryInput: event.target.value });
-    };
+    
 
     /*Make API call upon user pressing search-button*/
     handleSearch = () => {
         this.makeApiCall(this.state.countryInput);
+        this.setState({ searchingForNewCountry :  true});
     };
+
+    /*update the user input*/ 
+    handleOnChange = event => {
+    
+        this.setState({ countryInput: event.target.value });
+    };
+
+    handleOnKeyDown = event =>{
+        if(event.key === "Enter"){
+            this.handleSearch()
+        }
+
+    }
 
     /*
     Receives the input string from user, this input is likely the name of a country
@@ -88,20 +106,23 @@ export default class FetchCityPopsForCountry extends Component {
         this.cities.forEach(cityEntry =>{(this.divResults.push(
         <div>
         <br/>
-        <div>City : {cityEntry.name}</div>
-        <div>Population : {cityEntry.population.toLocaleString().replace(/,/g," ",)}</div>
+        <div  className = "resultbox">{cityEntry.name}</div>
+        {/*<div>Population : {cityEntry.population.toLocaleString().replace(/,/g," ",)}</div>*/}
         </div>))
         }
         )
 
         return (<div className="center">
-            <h1>Search by country</h1>
-            <input name="text" type="text" placeholder="Search" onChange={event => this.handleOnChange(event)} value={this.state.countryInput} />
-            <button onClick={this.handleSearch}>Search</button>
-            {this.state.showLoading ? (<div> loading
-            </div>) : (<div>
+            <div className = 'citypoptext'>CityPop</div>
+            {this.state.searchingForNewCountry ? <h1>{this.state.country}</h1> : <h1>SEARCH BY A COUNTRY</h1>}
+            <input className = "searchbox" name="text" type="text" placeholder="Search" onKeyDown = {event => this.handleOnKeyDown(event)} onChange={event => this.handleOnChange(event)} value={this.state.countryInput} />
+            <div><FontAwesomeIcon className = "searchbutton"  onClick={this.handleSearch} icon={faSearch} size="2x"/></div>
+            {this.state.showLoading ? 
+            (<div> loading </div> ) 
+            : 
+            (<div>
                 <br/>
-                <div>Country : {this.state.country}</div>
+                {/*only display top countries, splice from 0 to 2 in this case*/}
                 {this.divResults.splice(0,this.numberOfCountriesToDisplay)}
                 {this.undoResults()}
             </div>)}

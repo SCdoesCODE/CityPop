@@ -30,13 +30,17 @@ Country page
   collect these in another array and sort
   show only the cities with the highest population
 Figure out how to link between pages
+When displaying population, use regex(or something similar) to put spaces between the thousans
+Page where user chooses either to choose by city or country
 
 TODO
 
 Avoid error when a search result cannot be found
 More styling
-When displaying population, use regex(or something similar) to put spaces between the thousans
-Page where user chooses either to choose by city or country
+User should be able to choose between cities on "search by country" page
+create page where the population of chosen city is shown
+"go back" button
+
 
 
 */

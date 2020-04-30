@@ -57,6 +57,7 @@ input:focus::placeholder {
   height : 60px;
   /*to vertically center the text within the box*/
   line-height: 60px;
+  margin:auto;
   
 }
-
+  

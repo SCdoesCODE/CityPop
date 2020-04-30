@@ -17,39 +17,43 @@ User inputs country and the program returns the top cities
 
 TODO
 
-shows loading from the beginning, should not be shown before user has pressed search
-search should be invoked through enter also
+--DONEshows loading from the beginning, should not be shown before user has pressed search
+--DONEsearch should be invoked through enter also
 styling
 
 instead of showing error when country cannot be found - display some text
 
 Do test to see if input is case-insensitive
 
-show cities first, then let user pick city, then display the population of that city
+--DONEshow cities first, then let user pick city, 
+
+then display the population of that city
 
 */
 
 export default class FetchCityPopsForCountry extends Component {
 
-    
-   
     numberOfCountriesToDisplay = 3
     divResults = []
     cities = []
     
     state = {
         
-        showLoading: true,
+        showLoading: false,
         country: '',
         countryInput: '',
-        searchingForNewCountry : false
+        searchingForNewCountry : false,
+        displayCities : false,
+        oneCityChosen : false,
+        chosenCityName : '',
+        chosenCityPop : ''
     };
     
 
     /*Make API call upon user pressing search-button*/
     handleSearch = () => {
         this.makeApiCall(this.state.countryInput);
-        this.setState({ searchingForNewCountry :  true});
+        this.setState({ searchingForNewCountry :  true, showLoading : true});
     };
 
     /*update the user input*/ 
@@ -63,6 +67,11 @@ export default class FetchCityPopsForCountry extends Component {
             this.handleSearch()
         }
 
+    }
+
+    handleOnKeyPressed = cityIndex =>{
+        this.setState({ oneCityChosen: true , chosenCityName : this.cities[cityIndex].name, chosenCityPop : this.cities[cityIndex].population});
+        this.undoResults()
     }
 
     /*
@@ -87,7 +96,7 @@ export default class FetchCityPopsForCountry extends Component {
             return (a.population > b.population) ? -1:+1;
             });
         /*Update country with the help of geonames in case user misspelled*/
-        this.setState({ country: data.geonames[0].countryName,showLoading: false});
+        this.setState({ country: data.geonames[0].countryName,showLoading: false, displayCities : true});
         
     }
 
@@ -106,7 +115,7 @@ export default class FetchCityPopsForCountry extends Component {
         this.cities.forEach(cityEntry =>{(this.divResults.push(
         <div>
         <br/>
-        <div  className = "resultbox">{cityEntry.name}</div>
+        <div className = "resultbox">{cityEntry.name}</div>
         {/*<div>Population : {cityEntry.population.toLocaleString().replace(/,/g," ",)}</div>*/}
         </div>))
         }
@@ -114,18 +123,25 @@ export default class FetchCityPopsForCountry extends Component {
 
         return (<div className="center">
             <div className = 'citypoptext'>CityPop</div>
-            {this.state.searchingForNewCountry ? <h1>{this.state.country}</h1> : <h1>SEARCH BY A COUNTRY</h1>}
-            <input className = "searchbox" name="text" type="text" placeholder="Search" onKeyDown = {event => this.handleOnKeyDown(event)} onChange={event => this.handleOnChange(event)} value={this.state.countryInput} />
+            {this.state.searchingForNewCountry ? <h1>{this.state.country.toUpperCase()}</h1> : <h1>SEARCH BY A COUNTRY</h1>}
+            {!this.state.displayCities ? <div>
+                <input className = "searchbox" name="text" type="text" placeholder="Search" onKeyDown = {event => this.handleOnKeyDown(event)} onChange={event => this.handleOnChange(event)} value={this.state.countryInput} />
             <div><FontAwesomeIcon className = "searchbutton"  onClick={this.handleSearch} icon={faSearch} size="2x"/></div>
-            {this.state.showLoading ? 
-            (<div> loading </div> ) 
-            : 
+            </div> : this.state.oneCityChosen ? <div><div>{this.state.chosenCityName}</div><div>{this.state.chosenCityPop}</div></div> :
             (<div>
                 <br/>
-                {/*only display top countries, splice from 0 to 2 in this case*/}
-                {this.divResults.splice(0,this.numberOfCountriesToDisplay)}
-                {this.undoResults()}
-            </div>)}
+                {/*this.divResults.splice(0,this.numberOfCountriesToDisplay)*/}
+                <div>
+                <br/>
+                <div onClick = {() => {this.handleOnKeyPressed(0)}}  className = "resultbox">{this.cities[0].name}</div>
+                <div onClick = {() => {this.handleOnKeyPressed(1)}} className = "resultbox">{this.cities[1].name}</div>
+                <div onClick = {() => {this.handleOnKeyPressed(2)}} className = "resultbox">{this.cities[2].name}</div>
+                </div>
+            </div>)
+            }
+            {this.state.showLoading ? 
+            (<div> loading </div> ) 
+            : null}
         </div>);
     }
 }

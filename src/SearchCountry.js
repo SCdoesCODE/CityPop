@@ -3,8 +3,16 @@ import './style.css'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSearch } from '@fortawesome/free-solid-svg-icons'
+import { BallSpinFadeLoader } from 'react-pure-loaders';
 
 /*
+
+
+https://reactjsexample.com/react-purecomponent-loading-animations/
+react loader
+
+got Module not found: Can't resolve '@emotion/core'
+fixed with : npm install react-spinners --save
 
 https://programmingwithmosh.com/react/font-awesome-5-with-react/
 font awesome for react
@@ -123,15 +131,16 @@ export default class FetchCityPopsForCountry extends Component {
 
         return (<div className="center">
             <div className = 'citypoptext'>CityPop</div>
-            {this.state.searchingForNewCountry ? <h1>{this.state.country.toUpperCase()}</h1> : <h1>SEARCH BY A COUNTRY</h1>}
+            {this.state.searchingForNewCountry ? null : <h1>SEARCH BY A COUNTRY</h1>}
+            {this.state.oneCityChosen ? null : <h1>{this.state.country.toUpperCase()}</h1>}
             {!this.state.displayCities ? <div>
-                <input className = "searchbox" name="text" type="text" placeholder="Search" onKeyDown = {event => this.handleOnKeyDown(event)} onChange={event => this.handleOnChange(event)} value={this.state.countryInput} />
+                <input className = "searchbox" name="text" type="text" placeholder="Enter a country" onKeyDown = {event => this.handleOnKeyDown(event)} onChange={event => this.handleOnChange(event)} value={this.state.countryInput} />
             <div><FontAwesomeIcon className = "searchbutton"  onClick={this.handleSearch} icon={faSearch} size="2x"/></div>
-            </div> : this.state.oneCityChosen ? <div><div>{this.state.chosenCityName}</div><div>{this.state.chosenCityPop}</div></div> :
+            </div> : this.state.oneCityChosen ? <div><h1>{this.state.chosenCityName.toUpperCase()}</h1><div className = "resultcontainer"><div className = "chosencitybox"><span className = "newline">POPULATION</span><h1>{this.state.chosenCityPop.toLocaleString().replace(/,/g," ",)}</h1></div></div></div> :
             (<div>
                 <br/>
                 {/*this.divResults.splice(0,this.numberOfCountriesToDisplay)*/}
-                <div>
+                <div className = "resultcontainer">
                 <br/>
                 <div onClick = {() => {this.handleOnKeyPressed(0)}}  className = "resultbox">{this.cities[0].name}</div>
                 <div onClick = {() => {this.handleOnKeyPressed(1)}} className = "resultbox">{this.cities[1].name}</div>
@@ -139,9 +148,9 @@ export default class FetchCityPopsForCountry extends Component {
                 </div>
             </div>)
             }
-            {this.state.showLoading ? 
-            (<div> loading </div> ) 
-            : null}
+            
+            <div  className = "loadingspinner"> <BallSpinFadeLoader  color={'#000000'} loading={this.state.showLoading}/></div> 
+            
         </div>);
     }
 }

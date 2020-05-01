@@ -48,16 +48,51 @@ input:focus::placeholder {
   color: transparent;
 }
 
+.resultcontainer{
+  position: absolute;
+  top: 50%;
+  margin-top: 30px;
+  /* half of resultbox height*/
+  left: 0;
+  width: 100%;
+}
+
 .resultbox {
-  display : inline-block; 
-  text-align: center;
-  font-size: 18pt;
-  width: 400px;
-  box-shadow: 0px 0px 2px;
-  height : 60px;
-  /*to vertically center the text within the box*/
+  width: 500px;
+  font-size : 18pt;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom :  10px;
+  height: 60px;
+  /*to vertically center text, has to be equal to the height*/
   line-height: 60px;
-  margin:auto;
+  border: 1px solid #000000;
+}
+
+
+
+.chosencitybox{
+  width: 400px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom :  10px;
+  height: 150px;
+  /*to vertically center text, has to be equal to the height*/
+  line-height: 60px;
+  border: 1px solid #000000;
+}
+
+
+
+.loadingspinner{
+  margin: 0 auto;
+  /*0% to center the loading button, probably a better way to do this*/
+  width: 0%;
+  margin-top : 100px;
+}
+
+.newline{
+  display:block;
   
 }
   

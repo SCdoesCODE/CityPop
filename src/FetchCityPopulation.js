@@ -48,7 +48,8 @@ export default class FetchCountryData extends Component {
             {this.state.showLoading && !this.state.beforeSearch? (<div> loading
             </div>) : (<div>
                 <div>City : {this.state.city.name}</div>
-                <div>Population : {this.state.city.population}</div>
+            {/*<div><h1>{this.state.city.name.toUpperCase()}</h1><div className = "resultcontainer"><div className = "chosencitybox"><span className = "newline">POPULATION</span><h1>{this.state.city.population.toLocaleString().replace(/,/g," ",)}</h1></div></div></div>*/}
+                <div className = "resultbox">Population : {this.state.city.population}</div>
             </div>)}
         </div>);
     }

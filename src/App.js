@@ -1,7 +1,5 @@
 import React from 'react';
 import ChooseScope from './ChooseScope';
-import FetchCityPopulation from './FetchCityPopulation'
-import SearchCountry from './SearchCountry'
 import './style.css'
 
 
@@ -33,12 +31,14 @@ Figure out how to link between pages
 When displaying population, use regex(or something similar) to put spaces between the thousans
 Page where user chooses either to choose by city or country
 User should be able to choose between cities on "search by country" page
+create page where the population of chosen city is shown
 
 TODO
 
 Avoid error when a search result cannot be found
 More styling
-create page where the population of chosen city is shown
+Search by city styling
+search by city logic
 "go back" button
 
 

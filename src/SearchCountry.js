@@ -2,11 +2,16 @@ import React, { Component } from "react";
 import './style.css'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faSearch } from '@fortawesome/free-solid-svg-icons'
+import { faSearch , faHome} from '@fortawesome/free-solid-svg-icons'
 import { BallSpinFadeLoader } from 'react-pure-loaders';
+import {Link } from "react-router-dom";
 
 /*
 
+problem : all 2 code country codes
+when searching for e.g. india - the first thing that comes up is the british indian territory...
+adding fulltext = true fixes this
+https://www.iban.com/country-codes
 
 https://reactjsexample.com/react-purecomponent-loading-animations/
 react loader
@@ -41,8 +46,7 @@ then display the population of that city
 
 export default class FetchCityPopsForCountry extends Component {
 
-    numberOfCountriesToDisplay = 3
-    divResults = []
+    
     cities = []
     
     state = {
@@ -54,7 +58,8 @@ export default class FetchCityPopsForCountry extends Component {
         displayCities : false,
         oneCityChosen : false,
         chosenCityName : '',
-        chosenCityPop : ''
+        chosenCityPop : '', 
+        countryCodeError : false
     };
     
 
@@ -88,23 +93,32 @@ export default class FetchCityPopsForCountry extends Component {
     Searches for all cities belonging to this countrycode using geonames API
     */
     async makeApiCall(input) {
-        const urlCode = "https://restcountries.eu/rest/v2/name/" + input;
+        const urlCode = "https://restcountries.eu/rest/v2/name/" + input + "?fullText=true";
         const responseCode = await fetch(urlCode);
         const dataCode = await responseCode.json();
-        let countryCode = dataCode[0].alpha2Code
-        const url = "http://api.geonames.org/searchJSON?&country="+countryCode+"&featureCode=PPLA&featureCode=PPLC&username=weknowit";
-        const response = await fetch(url);
-        const data = await response.json();
-        /*For each city : add its name and population to the cities array, as an object*/ 
-        data.geonames.forEach(cityEntry => {
-            this.cities.push({population : cityEntry.population,name : cityEntry.name})
-                }) 
-        /*Sort the cities array according to the attribute : population*/
-        this.cities.sort(function(a, b) {
-            return (a.population > b.population) ? -1:+1;
-            });
-        /*Update country with the help of geonames in case user misspelled*/
-        this.setState({ country: data.geonames[0].countryName,showLoading: false, displayCities : true});
+        if(dataCode.status === 404){
+            this.setState({ countryCodeError : true, showLoading : false});
+        }
+        console.log(dataCode.status)
+        if(!this.state.countryCodeError){
+            let countryCode = dataCode[0].alpha2Code
+            const url = "http://api.geonames.org/searchJSON?&country="+countryCode+"&featureCode=PPLA&featureCode=PPLC&username=weknowit";
+            const response = await fetch(url);
+            const data = await response.json();
+            console.log(data.geonames.length)
+            /*For each city : add its name and population to the cities array, as an object*/ 
+            data.geonames.forEach(cityEntry => {
+                this.cities.push({population : cityEntry.population,name : cityEntry.name})
+                    }) 
+            /*Sort the cities array according to the attribute : population*/
+            this.cities.sort(function(a, b) {
+                return (a.population > b.population) ? -1:+1;
+                });
+            /*Update country with the help of geonames in case user misspelled*/
+            this.setState({ country: data.geonames[0].countryName,showLoading: false, displayCities : true});
+
+        }
+        
         
     }
 
@@ -119,27 +133,21 @@ export default class FetchCityPopsForCountry extends Component {
 
     render() {
 
-        /*populate the divResults array with divs displaying city-name and population*/
-        this.cities.forEach(cityEntry =>{(this.divResults.push(
-        <div>
-        <br/>
-        <div className = "resultbox">{cityEntry.name}</div>
-        {/*<div>Population : {cityEntry.population.toLocaleString().replace(/,/g," ",)}</div>*/}
-        </div>))
-        }
-        )
 
         return (<div className="center">
+            <Link to ='./ChooseScope' ><FontAwesomeIcon className = "homebutton"icon={faHome} size="2x"/></Link>
             <div className = 'citypoptext'>CityPop</div>
-            {this.state.searchingForNewCountry ? null : <h1>SEARCH BY A COUNTRY</h1>}
+            {this.state.searchingForNewCountry ? null : <h1>SEARCH BY COUNTRY</h1>}
+            {this.state.countryCodeError ? <h1>Could not find "{this.state.countryInput}"</h1> : null}
             {this.state.oneCityChosen ? null : <h1>{this.state.country.toUpperCase()}</h1>}
-            {!this.state.displayCities ? <div>
+            {!this.state.displayCities & !this.state.countryCodeError ? <div>
                 <input className = "searchbox" name="text" type="text" placeholder="Enter a country" onKeyDown = {event => this.handleOnKeyDown(event)} onChange={event => this.handleOnChange(event)} value={this.state.countryInput} />
             <div><FontAwesomeIcon className = "searchbutton"  onClick={this.handleSearch} icon={faSearch} size="2x"/></div>
-            </div> : this.state.oneCityChosen ? <div><h1>{this.state.chosenCityName.toUpperCase()}</h1><div className = "resultcontainer"><div className = "chosencitybox"><span className = "newline">POPULATION</span><h1>{this.state.chosenCityPop.toLocaleString().replace(/,/g," ",)}</h1></div></div></div> :
+            </div> : this.state.oneCityChosen &!this.state.countryCodeError ? <div><h1>{this.state.chosenCityName.toUpperCase()}</h1><div className = "resultcontainer"><div className = "chosencitybox"><span className = "newline">POPULATION</span><h1>{this.state.chosenCityPop.toLocaleString().replace(/,/g," ",)}</h1></div></div></div> 
+            : this.state.countryCodeError ? null : 
             (<div>
                 <br/>
-                {/*this.divResults.splice(0,this.numberOfCountriesToDisplay)*/}
+               
                 <div className = "resultcontainer">
                 <br/>
                 <div onClick = {() => {this.handleOnKeyPressed(0)}}  className = "resultbox">{this.cities[0].name}</div>
@@ -148,7 +156,7 @@ export default class FetchCityPopsForCountry extends Component {
                 </div>
             </div>)
             }
-            
+            {/*loader activated when this.state.showLoading is true*/}
             <div  className = "loadingspinner"> <BallSpinFadeLoader  color={'#000000'} loading={this.state.showLoading}/></div> 
             
         </div>);

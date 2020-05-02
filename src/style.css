@@ -76,6 +76,7 @@ input:focus::placeholder {
   margin-left: auto;
   margin-right: auto;
   margin-bottom :  10px;
+  margin-top : 20px;
   height: 150px;
   /*to vertically center text, has to be equal to the height*/
   line-height: 60px;
@@ -96,3 +97,6 @@ input:focus::placeholder {
   
 }
   
+.homebutton{
+  color : #000000;
+}

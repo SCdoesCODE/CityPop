@@ -8,6 +8,7 @@ CityPop uses the [RESTcountries API](https://restcountries.eu/) as well as the [
 
 1. Clone the repository 
 2. Run "npm install" to install the relevant packages
+*3. If you get the error "-bash: npm: command not found", to "https://www.npmjs.com/get-npm" and follow the instructions* 
 
 ## How to run
 

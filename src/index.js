@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import App from './App';
 import ChooseScope from './ChooseScope'
 import SearchCountry from './SearchCountry'
-import FetchCityPopulation from './FetchCityPopulation'
+import SearchCity from './SearchCity'
 
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 
@@ -15,7 +15,7 @@ ReactDOM.render(
        <Switch>
        <Route path="/ChooseScope" component={ChooseScope} />
         <Route path="/SearchCountry" component={SearchCountry} />
-         <Route path="/FetchCityPopulation" component={FetchCityPopulation} />
+         <Route path="/SearchCity" component={SearchCity} />
       </Switch>
       </BrowserRouter>,
   document.getElementById('root')

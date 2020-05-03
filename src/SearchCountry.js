@@ -8,43 +8,12 @@ import {Link } from "react-router-dom";
 
 /*
 
-problem : all 2 code country codes
-when searching for e.g. india - the first thing that comes up is the british indian territory...
-adding fulltext = true fixes this
-https://www.iban.com/country-codes
-
-https://reactjsexample.com/react-purecomponent-loading-animations/
-react loader
-
-got Module not found: Can't resolve '@emotion/core'
-fixed with : npm install react-spinners --save
-
-https://programmingwithmosh.com/react/font-awesome-5-with-react/
-font awesome for react
-
-http://www.geonames.org/export/codes.html
-featureCode = PPLA for seat of a first-order administrative division
-featureCode = PPLC to include the capital
-
 User inputs country and the program returns the top cities 
-
-TODO
-
---DONEshows loading from the beginning, should not be shown before user has pressed search
---DONEsearch should be invoked through enter also
-styling
-
-instead of showing error when country cannot be found - display some text
-
-Do test to see if input is case-insensitive
-
---DONEshow cities first, then let user pick city, 
-
-then display the population of that city
+The user can then click on one of these and the program displays the population of the chosen city
 
 */
 
-export default class FetchCityPopsForCountry extends Component {
+export default class SearchCountry extends Component {
 
     
     cities = []
@@ -75,6 +44,7 @@ export default class FetchCityPopsForCountry extends Component {
         this.setState({ countryInput: event.target.value });
     };
 
+    /*Listen for user pressing enter when search box in focus*/ 
     handleOnKeyDown = event =>{
         if(event.key === "Enter"){
             this.handleSearch()
@@ -82,6 +52,7 @@ export default class FetchCityPopsForCountry extends Component {
 
     }
 
+    /*When user clicks on one of the top countries for the given country*/ 
     handleOnKeyPressed = cityIndex =>{
         this.setState({ oneCityChosen: true , chosenCityName : this.cities[cityIndex].name, chosenCityPop : this.cities[cityIndex].population});
         this.undoResults()
@@ -93,6 +64,7 @@ export default class FetchCityPopsForCountry extends Component {
     Searches for all cities belonging to this countrycode using geonames API
     */
     async makeApiCall(input) {
+        
         const urlCode = "https://restcountries.eu/rest/v2/name/" + input + "?fullText=true";
         const responseCode = await fetch(urlCode);
         const dataCode = await responseCode.json();
@@ -123,7 +95,7 @@ export default class FetchCityPopsForCountry extends Component {
     }
 
     /*
-    Invoked after user has already searched for something
+    Invoked after user has already searched for something to reset results
     */
 
     undoResults(){
@@ -162,3 +134,27 @@ export default class FetchCityPopsForCountry extends Component {
         </div>);
     }
 }
+
+/*
+
+https://reactjsexample.com/react-purecomponent-loading-animations/
+react loader
+
+got Module not found: Can't resolve '@emotion/core'
+fixed with : npm install react-spinners --save
+
+https://programmingwithmosh.com/react/font-awesome-5-with-react/
+font awesome for react
+
+http://www.geonames.org/export/codes.html
+featureCode = PPLA for seat of a first-order administrative division
+featureCode = PPLC to include the capital
+
+Possible improvements:
+
+Implement some sort of protection for script injections
+e.g.
+"/","//", ";", '/**', inputs breaks the program because the user input is directly concatenated with the rest of the url
+
+
+*/

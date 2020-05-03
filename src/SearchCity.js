@@ -11,17 +11,15 @@ import {Link } from "react-router-dom";
 The user inputs a city
 The program displays the population of that city
 
-The user can input a country as well, and that would work
-Not sure if I should implement some error message if the input is not a city
-
-TODO
-
-can't do tolocalstring without getting error atm
+Possible improvements :
+Right now it's possible to get the population of a country, 
+haven't found a way to only search for city on geonames without downloading
 
 */
-export default class FetchCountryData extends Component {
+
+export default class SearchCity extends Component {
     state = {
-        beforeSearch : true,
+        
         showLoading: false,
         city: '',
         cityInput: '',
@@ -29,12 +27,6 @@ export default class FetchCountryData extends Component {
         cityNotFound : false, 
         nonValidInput : false
     };
-
-    
-
-    handleBack = () => {
-        this.props.history.goBack()
-      }
     
     handleOnChange = event => {
         this.setState({ cityInput: event.target.value });
@@ -48,7 +40,7 @@ export default class FetchCountryData extends Component {
     }
 
     handleSearch = () => {
-        this.setState({ showLoading: true , beforeSearch : false});
+        this.setState({ showLoading: true });
         this.makeApiCall(this.state.cityInput);
     };
     async makeApiCall(input) {
@@ -59,11 +51,11 @@ export default class FetchCountryData extends Component {
             const url = "http://api.geonames.org/searchJSON?name_equals="+ city +"&maxRows=1&username=weknowit";
             const response = await fetch(url);
             const data = await response.json();
+
             if(data.geonames.length === 0 ){
                 this.setState({ cityNotFound : true });
             }
             
-            /*let entryIndex = data.geonames.findIndex(entry => entry.name.toUpperCase() === input.toUpperCase());*/
             this.setState({ city: data.geonames[0] });
             this.setState({ showLoading: false , displayCityPop : true});
 

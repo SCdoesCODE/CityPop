@@ -6,7 +6,7 @@ CityPop uses the [RESTcountries API](https://restcountries.eu/) as well as the [
 
 ##How to install
 
-1. Clone the repository with "git clone git@github.com:SCdoesCODE/CityPop.git"
+1. Clone the repository 
 2. Run "npm install" to install the relevant packages
 
 ##How to run

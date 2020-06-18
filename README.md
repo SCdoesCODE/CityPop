@@ -2,7 +2,7 @@
 
 CityPop is a web application that upon user input displays the population of the most populous cities of a given country or the population of a given city. 
 
-CityPop uses the [RESTcountries API](https://restcountries.eu/) as well as the [Geonames API](http://www.geonames.org/export/web-services.html) to fetch relevant data for the app 
+CityPop uses the [RESTcountries API](https://restcountries.eu/) as well as the [Geonames API](http://www.geonames.org/export/web-services.html) to fetch relevant data for the app.
 
 ## How to install 
 
